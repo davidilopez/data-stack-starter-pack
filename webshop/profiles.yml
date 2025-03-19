@@ -1,0 +1,48 @@
+webshop:
+  target: dev
+  outputs:
+    dev:
+      dbname: webshop
+      host: localhost
+      pass: admin
+      port: 2345
+      schema: "{{ env_var('DBT_DEV_SCHEMA', 'dev') }}"
+      threads: 4
+      type: postgres
+      user: admin
+    dev_samples:
+      dbname: webshop
+      host: localhost
+      pass: admin
+      port: 2345
+      schema: raw
+      threads: 4
+      type: postgres
+      user: admin
+    test:
+      dbname: webshop
+      host: localhost
+      pass: admin
+      port: 5678
+      schema: "{{ env_var('GIT_SHA', 'test') }}"
+      threads: 4
+      type: postgres
+      user: admin
+    test_samples:
+      dbname: webshop
+      host: localhost
+      pass: admin
+      port: 5678
+      schema: raw
+      threads: 4
+      type: postgres
+      user: admin
+    prod:
+      dbname: webshop
+      host: localhost
+      pass: admin
+      port: 5432
+      schema: not_used
+      threads: 4
+      type: postgres
+      user: admin
