@@ -5,6 +5,8 @@ sources:
     tables:
 
       - name: category
+        config:
+          sampling_method: full_sample
         columns:
           - name: name
             data_type: character varying
@@ -18,6 +20,8 @@ sources:
             data_type: timestamp without time zone
 
       - name: customer
+        config:
+          sampling_method: full_sample
         columns:
           - name: name
             data_type: character varying
@@ -33,6 +37,11 @@ sources:
             data_type: timestamp without time zone
 
       - name: customeraddress
+        config:
+          sampling_method: sample_by_id
+          ref_column: id
+          ref_table: customer
+          filter_column: customer
         columns:
           - name: customer
             data_type: integer
@@ -54,6 +63,11 @@ sources:
             data_type: timestamp without time zone
 
       - name: customerpaymentprovider
+        config:
+          sampling_method: sample_by_id
+          ref_column: id
+          ref_table: customer
+          filter_column: customer
         columns:
           - name: customer
             data_type: integer
@@ -69,6 +83,10 @@ sources:
             data_type: timestamp without time zone
 
       - name: event
+        config:
+          sampling_method: random_sample
+          dev_sample_size: 25
+          test_sample_size: 50
         columns:
           - name: type
             data_type: character varying
@@ -82,6 +100,8 @@ sources:
             data_type: timestamp without time zone
 
       - name: paymentprovider
+        config:
+          sampling_method: full_sample
         columns:
           - name: name
             data_type: character varying
@@ -97,6 +117,8 @@ sources:
             data_type: timestamp without time zone
 
       - name: product
+        config:
+          sampling_method: full_sample
         columns:
           - name: name
             data_type: character varying
@@ -122,6 +144,8 @@ sources:
             data_type: timestamp without time zone
 
       - name: productbrand
+        config:
+          sampling_method: full_sample
         columns:
           - name: name
             data_type: character varying
@@ -133,6 +157,8 @@ sources:
             data_type: timestamp without time zone
 
       - name: productcategory
+        config:
+          sampling_method: full_sample
         columns:
           - name: category
             data_type: integer
@@ -146,6 +172,11 @@ sources:
             data_type: timestamp without time zone
 
       - name: orders
+        config:
+          sampling_method: sample_by_id
+          ref_table: customer
+          ref_column: id
+          filter_column: customer
         columns:
           - name: customer
             data_type: integer
@@ -161,6 +192,11 @@ sources:
             data_type: timestamp without time zone
 
       - name: orderitem
+        config:
+          sampling_method: sample_by_id
+          ref_table: orders
+          ref_column: id
+          filter_column: order
         columns:
           - name: order
             data_type: integer
