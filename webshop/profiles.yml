@@ -24,7 +24,7 @@ webshop:
       host: localhost
       pass: admin
       port: 5678
-      schema: "{{ env_var('GIT_SHA', 'test') }}"
+      schema: "ci_{{ env_var('GIT_SHA', 'test') }}"
       threads: 4
       type: postgres
       user: admin

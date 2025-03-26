@@ -3,7 +3,6 @@ sources:
     database: "{{ target.dbname }}"
     schema: raw
     tables:
-
       - name: category
         config:
           sampling_method: full_sample
