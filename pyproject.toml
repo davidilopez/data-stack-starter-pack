@@ -21,3 +21,14 @@ dev-dependencies = [
 
 [tool.ruff]
 include = ["pyproject.toml", "scripts/**/*.py"]
+
+[dependency-groups]
+book = [
+    "mkdocs>=1.6.1",
+]
+ci = [
+    "isort>=6.0.1",
+    "ruff>=0.11.0",
+    "shandy-sqlfmt[jinjafmt]>=0.26.0",
+    "yamllint>=1.36.2",
+]
