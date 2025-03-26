@@ -5,7 +5,7 @@ on:
     - main
 jobs:
   CI_jobs:
-    runs-on: ubuntu-latest # Usually ubuntu-latest
+    runs-on: self-hosted # ubuntu-latest
     env:
       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
