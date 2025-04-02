@@ -9,8 +9,10 @@ tasks:
     desc: "Get sample data for dbt"
     dir: ./webshop
     cmds:
-      - "uv run dbt run-operation create_all_samples --args '{source_schema: {{.POSTGRES_FOREIGN_SCHEMA}}}' --target dev_samples"
-      - "uv run dbt run-operation create_all_samples --args '{source_schema: {{.POSTGRES_FOREIGN_SCHEMA}}}' --target test_samples"
+      - "uv run dbt run-operation create_all_samples --args '{source_schema: {{.POSTGRES_FOREIGN_SCHEMA}}}'
+        --target dev_samples"
+      - "uv run dbt run-operation create_all_samples --args '{source_schema: {{.POSTGRES_FOREIGN_SCHEMA}}}'
+        --target test_samples"
     preconditions:
       - task: env_checks:check_dbt
       - task: env_checks:check_dbt_initialized
