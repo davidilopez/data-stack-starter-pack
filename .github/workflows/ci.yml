@@ -39,9 +39,7 @@ jobs:
 
       - name: Run yamlfmt
         run: >
-          uv run yamlfmt -gitignore_excludes
-            -conf .yamlfmt
-            -lint ${{ steps.changed-files.outputs.all_changed_files }}
+          uv run yamlfmt -lint ${{ steps.changed-files.outputs.all_changed_files }}
 
       - name: Run sqlfmt
         run: uv run sqlfmt --diff ${{ steps.changed-files.outputs.all_changed_files }} -l 99
