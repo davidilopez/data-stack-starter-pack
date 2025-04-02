@@ -1,6 +1,7 @@
 name: CI_cleanup
 on:
-  merge:
+  pull_request:
+    types: [closed]
     branches:
       - main
 jobs:
