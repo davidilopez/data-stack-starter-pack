@@ -11,14 +11,32 @@ jobs:
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v5
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v45
 
-      - name: Install Python
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5.2.2
+        with:
+          version: "0.5.28"
+
+      - name: Set up Python
         run: uv python install
 
       - name: Install dependencies
-        run: uv sync --group ci
+        run: uv sync --dev
+
+      - name: Run Ruff
+        run: uv run ruff check --output-format=github .
+
+      - name: Run isort
+        run: uv run isort --check --diff ${{ steps.changed-files.outputs.all_changed_files }}
+
+      - name: Run yamllint
+        run: uv run yamllint -c .yamllint ${{ steps.changed-files.outputs.all_changed_files }}
+
+      - name: Run sqlfmt
+        run: uv run sqlfmt --diff ${{ steps.changed-files.outputs.all_changed_files }} -l 99
