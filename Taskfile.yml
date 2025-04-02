@@ -23,7 +23,7 @@ tasks:
 
   init/dbt:
     desc: "Initialize dbt"
-    dir: ./dbt
+    dir: ./webshop
     cmds:
       - uv run dbt deps
       - uv run dbt seed
@@ -33,6 +33,8 @@ tasks:
   init/docker:
     desc: "Initialize Docker"
     cmds:
+      - chmod -R 755 ./scripts/*
+      - chmod -R 755 ./infra/postgres/*
       - task: docker:deploy/all
       - task: env_checks:check_data_status
 
@@ -41,7 +43,7 @@ tasks:
     cmds:
       - task gha_runner:get_token
       - task gha_runner:push_secrets
-    interactive: true
+      # interactive: true
 
   destroy/all:
     desc: "Destroy all infra"
@@ -55,11 +57,12 @@ tasks:
   reboot/gha_runner:
     desc: "Destroy GitHub Actions runner"
     cmds:
-      - docker compose down gha_runner
+      - chmod -R 750 ./infra/gha_runner/*
+      - podman compose down gha_runner
       - rm -rf ./infra/gha_runner/data
       - rm -rf ./infra/gha_runner/tmp
       - echo "GitHub Actions runner destroyed"
-      - docker compose up -d gha_runner
+      - podman compose up -d gha_runner
       - echo "GitHub Actions runner started"
     preconditions:
       - task: env_checks:check_github_token

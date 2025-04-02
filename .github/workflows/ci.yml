@@ -2,27 +2,48 @@ name: CI_pipeline
 on:
   pull_request:
     branches:
-    - main
+      - main
 jobs:
   CI_jobs:
-    runs-on: ubuntu-latest # Usually ubuntu-latest
+    runs-on: self-hosted # ubuntu-latest
     env:
       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-      # GIT_SHA: ---
+      PR_SCHEMA: "ci_pr_${{ github.event.pull_request.number }}"
+      PR_MANIFEST: ${{ github.event.pull_request.number }}_manifest.json
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      # - name: Check for changes only
-      #   uses: ---
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v45
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v5.2.2
+        with:
+          version: "0.5.28"
 
-      - name: Install Python
+      - name: Set up Python
         run: uv python install
 
       - name: Install dependencies
-        run: uv sync --group ci
+        run: uv sync --dev
+
+      - name: Run Ruff
+        run: uv run ruff check --output-format=github .
+
+      - name: Run isort
+        run: uv run isort --check --diff ${{ steps.changed-files.outputs.all_changed_files }}
+
+      - name: Run sqlfmt
+        run: uv run sqlfmt --diff ${{ steps.changed-files.outputs.all_changed_files }} -l 99
+
+      - name: Install dbt deps
+        working-directory: ./webshop
+        run: uv run dbt deps --target test
+
+      - name: Build dbt
+        working-directory: ./webshop
+        run: uv run dbt build --target test

@@ -1,0 +1,28 @@
+name: CI_cleanup
+on:
+  merge:
+    branches:
+      - main
+jobs:
+  CI_cleanup_jobs:
+    runs-on: self-hosted # ubuntu-latest
+    env:
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+      PR_SCHEMA: "ci_pr_${{ github.event.pull_request.number }}"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install psql
+        run: |
+          sudo apt update
+          sudo apt install -y postgresql-client
+
+      - name: Drop PR schema
+        run: |
+          echo "Dropping PR schema..."
+          psql -h test_postgres -p 5432 -U $POSTGRES_USER -d $POSTGRES_DB -c "DROP SCHEMA IF EXISTS $PR_SCHEMA CASCADE;"
+        env:
+          PGPASSWORD: $POSTGRES_PASSWORD

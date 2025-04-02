@@ -18,7 +18,7 @@ tasks:
       CONTAINERS: '{{.CONTAINERS | default "gha_runner"}}'
     cmds:
       - 'echo "Deploying containers: {{.CONTAINERS}}"'
-      - docker compose up -d {{.CONTAINERS}}
+      - podman compose up -d {{.CONTAINERS}}
     preconditions:
       - task: env_checks:check_dotenv
       - task: env_checks:check_github_token
@@ -36,7 +36,7 @@ tasks:
       CONTAINERS: '{{.CONTAINERS | default "gha_runner"}}'
     cmds:
       - 'echo "Stopping containers: {{.CONTAINERS}}"'
-      - docker compose stop {{.CONTAINERS}}
+      - podman compose stop {{.CONTAINERS}}
 
   remove:
     desc: |
@@ -50,13 +50,13 @@ tasks:
       CONTAINERS: '{{.CONTAINERS | default "gha_runner"}}'
     cmds:
       - 'echo "Removing containers: {{.CONTAINERS}}"'
-      - docker compose down {{.CONTAINERS}}
+      - podman compose down {{.CONTAINERS}}
 
   # All containers
   deploy/all:
     desc: "Deploy all containers"
     cmds:
-      - docker compose up -d
+      - podman compose up -d
     preconditions:
       - task: env_checks:check_dotenv
       - task: env_checks:check_github_token
@@ -64,9 +64,9 @@ tasks:
   stop/all:
     desc: "Stop all containers"
     cmds:
-      - docker compose stop
+      - podman compose stop
 
   remove/all:
     desc: "Remove all containers"
     cmds:
-      - docker compose down
+      - podman compose down

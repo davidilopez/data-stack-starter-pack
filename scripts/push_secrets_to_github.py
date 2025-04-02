@@ -86,12 +86,21 @@ def get_public_key() -> Tuple[str, str]:
 
 
 def select_secrets(secrets: List[str]) -> List[str]:
-    print("Select the secrets to push to GitHub (comma separated):")
+    print("Select the secrets to push to GitHub (comma separated, 0 if none):")
     for i, secret in enumerate(secrets, 1):
         print(f"{i}. {secret.split('=')[0]}")
 
-    selected_indices = input("\nEnter the numbers of the secrets to push: ").split(",")
-    return [secrets[int(index) - 1] for index in selected_indices]
+    selected_indices = input(
+        "\nEnter the numbers of the secrets to push (0 if none): "
+    ).split(",")
+    if selected_indices == ["0"] or selected_indices == [""]:
+        logging.info("No secrets selected.")
+        return []
+    try:
+        return [secrets[int(index) - 1] for index in selected_indices]
+    except (ValueError, IndexError):
+        logging.error("Invalid selection. Please enter valid numbers.")
+        raise ValueError("Invalid selection.")
 
 
 def main() -> None:

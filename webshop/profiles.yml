@@ -21,10 +21,10 @@ webshop:
       user: admin
     test:
       dbname: webshop
-      host: localhost
+      host: test_postgres
       pass: admin
-      port: 5678
-      schema: "ci_{{ env_var('GIT_SHA', 'test') }}"
+      port: 5432
+      schema: "{{ env_var('PR_SCHEMA', 'test') }}"
       threads: 4
       type: postgres
       user: admin
@@ -39,7 +39,7 @@ webshop:
       user: admin
     prod:
       dbname: webshop
-      host: localhost
+      host: prod_postgres
       pass: admin
       port: 5432
       schema: not_used
