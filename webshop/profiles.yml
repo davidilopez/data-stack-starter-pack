@@ -24,7 +24,7 @@ webshop:
       host: test_postgres
       pass: admin
       port: 5432
-      schema: "ci_{{ env_var('PR_SCHEMA', 'test') }}"
+      schema: "{{ env_var('PR_SCHEMA', 'test') }}"
       threads: 4
       type: postgres
       user: admin

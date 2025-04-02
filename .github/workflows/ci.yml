@@ -10,7 +10,7 @@ jobs:
       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-      PR_SCHEMA: "pr_${{ github.event.pull_request.number }}"
+      PR_SCHEMA: "ci_pr_${{ github.event.pull_request.number }}"
       PR_MANIFEST: ${{ github.event.pull_request.number }}_manifest.json
     steps:
       - name: Checkout code
