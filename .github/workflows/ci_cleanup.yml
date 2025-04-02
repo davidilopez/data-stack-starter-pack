@@ -24,6 +24,4 @@ jobs:
       - name: Drop PR schema
         run: |
           echo "Dropping PR schema..."
-          psql -h test_postgres -p 5432 -U $POSTGRES_USER -d $POSTGRES_DB -c "DROP SCHEMA IF EXISTS $PR_SCHEMA CASCADE;"
-        env:
-          PGPASSWORD: $POSTGRES_PASSWORD
+          PGPASSWORD=$POSTGRES_PASSWORD psql -h test_postgres -p 5432 -U $POSTGRES_USER -d $POSTGRES_DB -c "DROP SCHEMA IF EXISTS $PR_SCHEMA CASCADE;"
