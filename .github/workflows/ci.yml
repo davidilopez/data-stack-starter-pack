@@ -10,6 +10,8 @@ jobs:
       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+      PR_SCHEMA: "pr_${{ github.event.pull_request.number }}"
+      PR_MANIFEST: ${{ github.event.pull_request.number }}_manifest.json
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -35,8 +37,40 @@ jobs:
       - name: Run isort
         run: uv run isort --check --diff ${{ steps.changed-files.outputs.all_changed_files }}
 
-      - name: Run yamllint
-        run: uv run yamllint -c .yamllint ${{ steps.changed-files.outputs.all_changed_files }}
+      - name: Run yamlfmt
+        run: uv run yamlfmt -conf .yamlfmt -lint {{ steps.changed-files.outputs.all_changed_files }}
 
       - name: Run sqlfmt
         run: uv run sqlfmt --diff ${{ steps.changed-files.outputs.all_changed_files }} -l 99
+
+      - name: Try to download {pr number}_manifest.json
+        uses: actions/download-artifact@v4
+        with:
+          name: PR_ARTIFACT_${{ github.event.pull_request.number }}
+          path: ./webshop/target
+
+      - name: Install dbt deps
+        working-directory: ./webshop
+        run: uv run dbt deps --target test
+
+      - name: Build dbt
+        working-directory: ./webshop
+        run: uv run dbt build --target test --select "state:modified+" --state target/$PR_MANIFEST
+
+      - name: Rename manifest.json to {pr number}_manifest.json
+        run: |
+          if [ -f ./webshop/target/manifest.json ]; then
+            mv ./webshop/target/manifest.json ./webshop/target/$PR_MANIFEST
+          else
+            echo "manifest.json not found"
+          fi
+
+      - name: Save manifest.json as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          working-directory: ./webshop/target
+          path: $PR_MANIFEST
+          name: PR_ARTIFACT_${{ github.event.pull_request.number }}
+          if-no-files-found: warn
+          retention-days: 90
+          overwrite: true
