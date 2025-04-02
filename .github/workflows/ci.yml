@@ -37,9 +37,8 @@ jobs:
       - name: Run isort
         run: uv run isort --check --diff ${{ steps.changed-files.outputs.all_changed_files }}
 
-      - name: Run yamlfmt
-        run: >
-          uv run yamlfmt -lint ${{ steps.changed-files.outputs.all_changed_files }}
+      - name: Run yamllint
+        run: uv run yamllint -c .yamllint ${{ steps.changed-files.outputs.all_changed_files }}
 
       - name: Run sqlfmt
         run: uv run sqlfmt --diff ${{ steps.changed-files.outputs.all_changed_files }} -l 99
