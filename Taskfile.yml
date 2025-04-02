@@ -23,7 +23,7 @@ tasks:
 
   init/dbt:
     desc: "Initialize dbt"
-    dir: ./dbt
+    dir: ./webshop
     cmds:
       - uv run dbt deps
       - uv run dbt seed
@@ -33,6 +33,8 @@ tasks:
   init/docker:
     desc: "Initialize Docker"
     cmds:
+      - chmod -R 777 ./scripts/*
+      - chmod -R 777 ./infra/postgres/*
       - task: docker:deploy/all
       - task: env_checks:check_data_status
 
@@ -41,7 +43,7 @@ tasks:
     cmds:
       - task gha_runner:get_token
       - task gha_runner:push_secrets
-    interactive: true
+    # interactive: true
 
   destroy/all:
     desc: "Destroy all infra"

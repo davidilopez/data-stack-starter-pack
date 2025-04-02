@@ -8,7 +8,7 @@ tasks:
     desc: "Push secrets to the GitHub repository"
     cmds:
       - uv run python ./scripts/push_secrets_to_github.py
-    interactive: true
+    # interactive: true
     silent: true
 
   get_token:
